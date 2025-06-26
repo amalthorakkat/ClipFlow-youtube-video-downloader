@@ -30,8 +30,17 @@ const LinkPaste = () => {
   };
 
   if (mediaInfo) {
-    console.log('Formats',mediaInfo.formats)
+    console.log("Formats", mediaInfo.formats);
   }
+
+  const videoFormats = mediaInfo
+    ? mediaInfo.formats.filter((format) =>
+        format.mimeType.includes("video/mp4")
+      )
+    : [];
+  const audioFormats = mediaInfo
+    ? mediaInfo.formats.filter((format) => format.mimeType.includes("audio"))
+    : [];
 
   return (
     <div>
@@ -83,24 +92,56 @@ const LinkPaste = () => {
       {mediaInfo && (
         <div className="mt-6 mx-auto max-w-md">
           <h2 className="text-xl font-semibold truncate">{mediaInfo.title}</h2>
-          <ul className="mt-4 space-y-2">
-            {mediaInfo.formats.map((format, index) => (
-              <li
-                key={`${format.itag}-${index}`}
-                className="flex justify-between items-center border p-2 rounded"
-              >
-                <span>
-                  {format.quality} ({format.mimeType})
-                </span>
-                <button
-                  onClick={() => handleDownload(format.url, mediaInfo.title)}
-                  className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
-                >
-                  Download
-                </button>
-              </li>
-            ))}
-          </ul>
+          {videoFormats.length > 0 && (
+            <div className="mt-4">
+              <h3 className="text-lg font-medium">Video Formats</h3>
+              <ul className="mt-2 space-y-2">
+                {videoFormats.map((format, index) => (
+                  <li
+                    key={`${format.itag}-${index}`}
+                    className="flex justify-between items-center border p-2 rounded"
+                  >
+                    <span>
+                      {format.quality} ({format.mimeType})
+                    </span>
+                    <button
+                      onClick={() =>
+                        handleDownload(format.url, mediaInfo.title)
+                      }
+                      className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
+                    >
+                      Download
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {audioFormats.length > 0 && (
+            <div className="mt-4">
+              <h3 className="text-lg font-medium">Audio Formats</h3>
+              <ul className="mt-2 space-y-2">
+                {audioFormats.map((format, index) => (
+                  <li
+                    key={`${format.itag}-${index}`}
+                    className="flex justify-between items-center border p-2 rounded"
+                  >
+                    <span>
+                      {format.quality} ({format.mimeType})
+                    </span>
+                    <button
+                      onClick={() =>
+                        handleDownload(format.url, mediaInfo.title)
+                      }
+                      className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
+                    >
+                      Download
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
     </div>

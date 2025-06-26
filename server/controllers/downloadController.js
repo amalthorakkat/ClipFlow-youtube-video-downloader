@@ -14,47 +14,59 @@ const getMediaInfo = async (req, res) => {
   const { url } = req.body;
   try {
     if (!ytdl.validateURL(url)) {
-      return res.status(400).json({ error: "Invalid Youtube URL" });
+      return res.status(400).json({ error: "Invalid YouTube URL" });
     }
-
     console.log("Fetching info for URL:", url);
     const info = await ytdl.getInfo(url);
     console.log("Info fetched successfully!");
-
-    const seenItags = new Set();
-    const formats = info.formats
-      .filter((format) => {
-        if (
+    const formatsMap = new Map();
+    info.formats
+      .filter(
+        (format) =>
           format.mimeType.includes("video/mp4") ||
           format.mimeType.includes("audio")
+      )
+      .forEach((format) => {
+        const mimeType = format.mimeType.split(";")[0];
+        const key = format.qualityLabel || mimeType;
+        const current = formatsMap.get(key);
+        if (
+          !current ||
+          (format.audioBitrate &&
+            format.audioBitrate > (current.audioBitrate || 0))
         ) {
-          const mimeType = format.mimeType.split(";")[0];
-          const codecs =
-            format.mimeType.split('codecs="')[1]?.split('"')[0] || "";
-          const key = `${format.itag}-${mimeType}-${codecs}`;
-
-          if (!seenItags.has(key)) {
-            seenItags.add(key);
-            return true;
-          }
-          return false;
+          formatsMap.set(key, format);
         }
-        return false;
-      })
+      });
+    const formats = Array.from(formatsMap.values())
       .map((format) => ({
         itag: format.itag,
-        quality: format.qualityLabel || "audio",
+        quality:
+          format.qualityLabel ||
+          (format.audioBitrate ? `${format.audioBitrate}kbps` : "audio"),
         mimeType: format.mimeType.split(";")[0],
         url: urlEncode(format.url),
-      }));
+      }))
+      .sort((a, b) => {
+        if (a.mimeType.includes("video") && b.mimeType.includes("video")) {
+          const qualityA = parseInt(a.quality) || 0;
+          const qualityB = parseInt(b.quality) || 0;
+          return qualityB - qualityA;
+        }
+        if (a.mimeType.includes("audio") && b.mimeType.includes("audio")) {
+          const bitrateA = parseInt(a.quality) || 0;
+          const bitrateB = parseInt(b.quality) || 0;
+          return bitrateB - bitrateA;
+        }
+        return a.mimeType.includes("video") ? -1 : 1;
+      });
 
     res.json({
       title: info.videoDetails.title,
       formats,
     });
   } catch (error) {
-    console.error("Error in getMediaInfo: ", error.message, error.stack);
-    console.log(error.stack);
+    console.error("Error in getMediaInfo:", error.message, error.stack);
     res
       .status(500)
       .json({ error: "Failed to fetch media info", details: error.message });

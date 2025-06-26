@@ -61,8 +61,15 @@ const getMediaInfo = async (req, res) => {
         return a.mimeType.includes("video") ? -1 : 1;
       });
 
+    const thumbnail = info.videoDetails.thumbnails.reduce(
+      (prev, curr) =>
+        prev.width * prev.height > curr.width * curr.height ? prev : curr,
+      {}
+    );
+
     res.json({
       title: info.videoDetails.title,
+      thumbnail: thumbnail.url || "",
       formats,
     });
   } catch (error) {

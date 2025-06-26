@@ -1,6 +1,167 @@
+// import React, { useState } from "react";
+// import { IoMdArrowRoundForward } from "react-icons/io";
+// import axiosInstance from "../../config/axiosInstance";
+
+// const LinkPaste = () => {
+//   const [url, setUrl] = useState("");
+//   const [mediaInfo, setMediaInfo] = useState(null);
+//   const [error, setError] = useState("");
+//   const [isLoading, setIsLoading] = useState(false);
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setError("");
+//     setIsLoading(true);
+//     try {
+//       const response = await axiosInstance.post("/download", { url });
+//       setMediaInfo(response.data);
+//     } catch (error) {
+//       setError(error.response?.data?.error || "Failed to fetch media info");
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   const handleDownload = (formatUrl, title) => {
+//     const link = document.createElement("a");
+//     link.href = `http://localhost:5000/api/proxy?url=${formatUrl}`;
+//     link.download = `${title.replace(/[^a-zA-Z0-9]/g, "_")}.mp4`;
+//     link.click();
+//   };
+
+//   if (mediaInfo) {
+//     console.log("Formats:", mediaInfo.formats);
+//     console.log("Thumbnail:", mediaInfo.thumbnail);
+//   }
+
+//   const videoFormats = mediaInfo
+//     ? mediaInfo.formats.filter((format) =>
+//         format.mimeType.includes("video/mp4")
+//       )
+//     : [];
+//   const audioFormats = mediaInfo
+//     ? mediaInfo.formats.filter((format) => format.mimeType.includes("audio"))
+//     : [];
+
+//   return (
+//     <div>
+//       <form onSubmit={handleSubmit}>
+//         <div className="bg-[#101828] text-white flex items-center justify-center flex-col h-[250px]">
+//           <h1 className="text-[25px] font-medium">Youtube Video Downloader</h1>
+//           <div className="border bg-white text-black w-[300px] flex items-center justify-center rounded-[5px] mt-5">
+//             <input
+//               className="outline-none h-full w-full pl-2"
+//               type="text"
+//               value={url}
+//               onChange={(e) => setUrl(e.target.value)}
+//               placeholder="Paste YouTube link here"
+//             />
+//             <button
+//               className="text-white bg-black h-9 w-9 flex items-center justify-center text-2xl"
+//               type="submit"
+//               disabled={isLoading}
+//             >
+//               {isLoading ? (
+//                 <svg
+//                   className="animate-spin h-5 w-5 text-white"
+//                   xmlns="http://www.w3.org/2000/svg"
+//                   fill="none"
+//                   viewBox="0 0 24 24"
+//                 >
+//                   <circle
+//                     className="opacity-25"
+//                     cx="12"
+//                     cy="12"
+//                     r="10"
+//                     stroke="currentColor"
+//                     strokeWidth="4"
+//                   ></circle>
+//                   <path
+//                     className="opacity-75"
+//                     fill="currentColor"
+//                     d="M4 12a8 8 0 018-8v8z"
+//                   ></path>
+//                 </svg>
+//               ) : (
+//                 <IoMdArrowRoundForward />
+//               )}
+//             </button>
+//           </div>
+//         </div>
+//       </form>
+//       {error && <p className="text-red-500 text-center mt-4">{error}</p>}
+//       {mediaInfo && (
+//         <div className="mt-6 mx-auto max-w-md">
+//           {mediaInfo.thumbnail && (
+//             <img
+//               src={mediaInfo.thumbnail}
+//               alt={mediaInfo.title}
+//               className="w-full h-auto rounded-lg mb-4"
+//             />
+//           )}
+//           <h2 className="text-xl font-semibold truncate">{mediaInfo.title}</h2>
+//           {videoFormats.length > 0 && (
+//             <div className="mt-4">
+//               <h3 className="text-lg font-medium">Video Formats</h3>
+//               <ul className="mt-2 space-y-2">
+//                 {videoFormats.map((format, index) => (
+//                   <li
+//                     key={`${format.itag}-${index}`}
+//                     className="flex justify-between items-center border p-2 rounded"
+//                   >
+//                     <span>
+//                       {format.quality} ({format.mimeType})
+//                     </span>
+//                     <button
+//                       onClick={() =>
+//                         handleDownload(format.url, mediaInfo.title)
+//                       }
+//                       className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
+//                     >
+//                       Download
+//                     </button>
+//                   </li>
+//                 ))}
+//               </ul>
+//             </div>
+//           )}
+//           {audioFormats.length > 0 && (
+//             <div className="mt-4">
+//               <h3 className="text-lg font-medium">Audio Formats</h3>
+//               <ul className="mt-2 space-y-2">
+//                 {audioFormats.map((format, index) => (
+//                   <li
+//                     key={`${format.itag}-${index}`}
+//                     className="flex justify-between items-center border p-2 rounded"
+//                   >
+//                     <span>
+//                       {format.quality} ({format.mimeType})
+//                     </span>
+//                     <button
+//                       onClick={() =>
+//                         handleDownload(format.url, mediaInfo.title)
+//                       }
+//                       className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
+//                     >
+//                       Download
+//                     </button>
+//                   </li>
+//                 ))}
+//               </ul>
+//             </div>
+//           )}
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default LinkPaste;
+
+
 import React, { useState } from "react";
-import { IoMdArrowRoundForward } from "react-icons/io";
-import axiosInstance from "../../config/axiosInstance";
+import { ArrowRight, Download, Video, Music, Loader2 } from "lucide-react";
+import axiosInstance from '../../config/axiosInstance';
 
 const LinkPaste = () => {
   const [url, setUrl] = useState("");
@@ -15,9 +176,9 @@ const LinkPaste = () => {
     try {
       const response = await axiosInstance.post("/download", { url });
       setMediaInfo(response.data);
+      setIsLoading(false);
     } catch (error) {
       setError(error.response?.data?.error || "Failed to fetch media info");
-    } finally {
       setIsLoading(false);
     }
   };
@@ -30,118 +191,181 @@ const LinkPaste = () => {
   };
 
   if (mediaInfo) {
-    console.log("Formats", mediaInfo.formats);
+    console.log("Formats:", mediaInfo.formats);
+    console.log("Thumbnail:", mediaInfo.thumbnail);
   }
 
   const videoFormats = mediaInfo
-    ? mediaInfo.formats.filter((format) =>
-        format.mimeType.includes("video/mp4")
-      )
+    ? mediaInfo.formats.filter((format) => format.mimeType.includes("video/mp4"))
     : [];
   const audioFormats = mediaInfo
     ? mediaInfo.formats.filter((format) => format.mimeType.includes("audio"))
     : [];
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div className="bg-[#101828] text-white flex items-center justify-center flex-col h-[250px]">
-          <h1 className="text-[25px] font-medium">Youtube Video Downloader</h1>
-          <div className="border bg-white text-black w-[300px] flex items-center justify-center rounded-[5px] mt-5">
-            <input
-              className="outline-none h-full w-full pl-2"
-              type="text"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="Paste YouTube link here"
-            />
-            <button
-              className="text-white bg-black h-9 w-9 flex items-center justify-center text-2xl"
-              type="submit"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <svg
-                  className="animate-spin h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v8z"
-                  ></path>
-                </svg>
-              ) : (
-                <IoMdArrowRoundForward />
-              )}
-            </button>
+    <div className="flex flex-col bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20"></div>
+        <div className="relative px-4 sm:px-6 md:px-8 py-8 sm:py-12 md:py-16">
+          <form onSubmit={handleSubmit}>
+            <div className="max-w-3xl mx-auto text-center">
+              <div className="mb-6 sm:mb-8 md:mb-10">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight">
+                  YouTube Downloader
+                </h1>
+                <p className="text-sm sm:text-base md:text-lg text-gray-300 max-w-xl mx-auto px-2">
+                  Download your favorite YouTube videos in high quality with just one click
+                </p>
+              </div>
+              
+              <div className="max-w-xl mx-auto px-2">
+                <div className="relative group">
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
+                  <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-1.5 sm:p-2">
+                    <div className="flex flex-col sm:flex-row items-stretch gap-2">
+                      <input
+                        className="flex-1 bg-transparent text-white placeholder-gray-400 text-sm sm:text-base px-3 sm:px-4 py-2.5 sm:py-3 outline-none min-w-0 rounded-lg sm:rounded-none sm:rounded-l-lg"
+                        type="text"
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
+                        placeholder="Paste your YouTube link here..."
+                      />
+                      <button
+                        className=" cursor-pointer bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg sm:rounded-r-lg px-4 sm:px-5 py-2.5 sm:py-3 font-medium transition-all duration-300 flex items-center justify-center space-x-1 sm:space-x-2 shadow-md hover:shadow-lg transform hover:scale-105 text-sm sm:text-base"
+                        type="submit"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                            <span className="hidden sm:inline">Processing...</span>
+                            <span className="sm:hidden">...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="hidden sm:inline">Download</span>
+                            <span className="sm:hidden">Go</span>
+                            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 md:px-8 mb-4 sm:mb-6">
+          <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 sm:p-4 backdrop-blur-sm">
+            <p className="text-red-400 text-center font-medium text-sm sm:text-base">{error}</p>
           </div>
         </div>
-      </form>
-      {error && <p className="text-red-500 text-center mt-4">{error}</p>}
+      )}
+
+      {/* Media Info Section */}
       {mediaInfo && (
-        <div className="mt-6 mx-auto max-w-md">
-          <h2 className="text-xl font-semibold truncate">{mediaInfo.title}</h2>
-          {videoFormats.length > 0 && (
-            <div className="mt-4">
-              <h3 className="text-lg font-medium">Video Formats</h3>
-              <ul className="mt-2 space-y-2">
-                {videoFormats.map((format, index) => (
-                  <li
-                    key={`${format.itag}-${index}`}
-                    className="flex justify-between items-center border p-2 rounded"
-                  >
-                    <span>
-                      {format.quality} ({format.mimeType})
-                    </span>
-                    <button
-                      onClick={() =>
-                        handleDownload(format.url, mediaInfo.title)
-                      }
-                      className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
-                    >
-                      Download
-                    </button>
-                  </li>
-                ))}
-              </ul>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8 mt-10">
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+              {/* Thumbnail and Title */}
+              <div className="space-y-3 sm:space-y-4 md:space-y-6">
+                {mediaInfo.thumbnail ? (
+                  <div className="relative group">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg sm:rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
+                    <img
+                      src={mediaInfo.thumbnail}
+                      alt={mediaInfo.title}
+                      className="relative w-full max-h-48 sm:max-h-64 object-cover rounded-lg sm:rounded-xl shadow-lg transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full h-48 sm:h-64 bg-gray-700/20 rounded-lg sm:rounded-xl animate-pulse shadow-lg"></div>
+                )}
+                <div>
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white leading-tight line-clamp-2 text-center ">
+                    {mediaInfo.title}
+                  </h2>
+                </div>
+              </div>
+
+              {/* Download Options */}
+              <div className="space-y-4 sm:space-y-6 md:space-y-8">
+                {/* Video Formats */}
+                {videoFormats.length > 0 && (
+                  <div>
+                    <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4 md:mb-6">
+                      <div className="p-1.5 sm:p-2 bg-blue-500/20 rounded-md">
+                        <Video className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-blue-400" />
+                      </div>
+                      <h3 className="text-base sm:text-lg md:text-xl font-semibold text-white">Video</h3>
+                    </div>
+                    <div className="space-y-2 sm:space-y-3">
+                      {videoFormats.map((format, index) => (
+                        <div
+                          key={`${format.itag}-${index}`}
+                          className="bg-white/5 border border-white/10 rounded-lg p-2 sm:p-3 hover:bg-white/10 transition-all duration-300 group"
+                        >
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3">
+                            <div className="text-gray-300 min-w-0">
+                              <div className="font-semibold text-white text-xs sm:text-sm md:text-base">{format.quality}</div>
+                              <div className="text-xs sm:text-sm text-gray-400 truncate">({format.mimeType})</div>
+                            </div>
+                            <button
+                              onClick={() => handleDownload(format.url, mediaInfo.title)}
+                              className= " cursor-pointer bg-blue-500 hover:bg-blue-600 text-white px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-md font-medium transition-all duration-300 flex items-center justify-center space-x-1 sm:space-x-2 group-hover:scale-105 shadow-md text-xs sm:text-sm md:text-base whitespace-nowrap"
+                            >
+                              <Download className="w-3 h-3 sm:w-4 sm:h-4" />
+                              <span>Download</span>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Audio Formats */}
+                {audioFormats.length > 0 && (
+                  <div>
+                    <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4 md:mb-6">
+                      <div className="p-1.5 sm:p-2 bg-purple-500/20 rounded-md">
+                        <Music className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-purple-400" />
+                      </div>
+                      <h3 className="text-base sm:text-lg md:text-xl font-semibold text-white">Audio</h3>
+                    </div>
+                    <div className="space-y-2 sm:space-y-3">
+                      {audioFormats.map((format, index) => (
+                        <div
+                          key={`${format.itag}-${index}`}
+                          className="bg-white/5 border border-white/10 rounded-lg p-2 sm:p-3 hover:bg-white/10 transition-all duration-300 group"
+                        >
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3">
+                            <div className="text-gray-300 min-w-0">
+                              <div className="font-semibold text-white text-xs sm:text-sm md:text-base">{format.quality}</div>
+                              <div className="text-xs sm:text-sm text-gray-400 truncate">({format.mimeType})</div>
+                            </div>
+                            <button
+                              onClick={() => handleDownload(format.url, mediaInfo.title)}
+                              className="bg-purple-500 cursor-pointer hover:bg-purple-600 text-white px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-md font-medium transition-all duration-300 flex items-center justify-center space-x-1 sm:space-x-2 group-hover:scale-105 shadow-md text-xs sm:text-sm md:text-base whitespace-nowrap"
+                            >
+                              <Download className="w-3 h-3 sm:w-4 sm:h-4" />
+                              <span>Download</span>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-          )}
-          {audioFormats.length > 0 && (
-            <div className="mt-4">
-              <h3 className="text-lg font-medium">Audio Formats</h3>
-              <ul className="mt-2 space-y-2">
-                {audioFormats.map((format, index) => (
-                  <li
-                    key={`${format.itag}-${index}`}
-                    className="flex justify-between items-center border p-2 rounded"
-                  >
-                    <span>
-                      {format.quality} ({format.mimeType})
-                    </span>
-                    <button
-                      onClick={() =>
-                        handleDownload(format.url, mediaInfo.title)
-                      }
-                      className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
-                    >
-                      Download
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          </div>
         </div>
       )}
     </div>

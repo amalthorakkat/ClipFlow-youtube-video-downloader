@@ -5,3 +5,11 @@
   margin: 0;
   padding: 0;
 }
+
+
+
+
+/* Move disclaimer to Footer.jsx if intended (share Layout.jsx if needed).
+Add video duration/upload date to backend response.
+Implement download progress indicator.
+Deploy to Vercel (frontend) and Render (backend). */

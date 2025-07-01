@@ -5,12 +5,26 @@ require("dotenv").config();
 
 const downloadRoutes = require("./routes/download");
 
+const allowedOrigins = [
+  "https://clip-flow-youtube-video-downloader.vercel.app",
+  "https://clip-flow-youtube-video-dow-git-68171b-amal-thorakkats-projects.vercel.app",
+  "https://clip-flow-youtube-video-downloader-qnfwhpuz3.vercel.app",
+];
+
 const app = express();
 app.use(
   cors({
     // origin: "http://localhost:5173",
-    origin: "https://clip-flow-youtube-video-downloader.vercel.app",
-    allowedHeaders:['Content-Type'],
+    // origin: "https://clip-flow-youtube-video-downloader-qnfwhpuz3.vercel.app",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, origin);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    allowedHeaders: ["Content-Type"],
+    methods: ["GET", "POST", "OPTIONS"],
     credentials: true,
   })
 );

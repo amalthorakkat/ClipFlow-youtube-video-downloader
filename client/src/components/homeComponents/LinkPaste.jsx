@@ -433,12 +433,21 @@ const LinkPaste = ({ onDownload }) => {
         duration: 3000,
       });
     } catch (error) {
-      const errorMessage =
-        error.response?.status === 429
-          ? "Too many requests. Please try again later."
-          : error.response?.status === 400
-          ? "Invalid link"
-          : "Failed to fetch media info";
+      let errorMessage;
+      if (error.response) {
+        if (error.response.status === 429) {
+          errorMessage = "Too many requests. Please try again later.";
+        } else if (error.response.status === 400) {
+          errorMessage = "Invalid link";
+        } else {
+          errorMessage = "Failed to fetch media info";
+        }
+      } else if (error.request && error.message.includes("Network Error")) {
+        errorMessage =
+          "CORS error: Unable to connect to the server. Please check your backend configuration.";
+      } else {
+        errorMessage = "An unexpected error occurred";
+      }
       toast.error(errorMessage, {
         style: {
           background: "rgba(255, 255, 255, 0.05)",

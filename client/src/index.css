@@ -46,3 +46,46 @@
 Add video duration/upload date to backend response.
 Implement download progress indicator.
 Deploy to Vercel (frontend) and Render (backend). */
+
+
+
+
+
+@keyframes borderGlow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slideInBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%) scale(0.8);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(10%) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0%) scale(1);
+  }
+}
+
+@keyframes glowingBorder {
+  0%, 100% {
+    box-shadow: 
+      0 0 5px rgba(var(--glow-color), 0.5),
+      0 0 15px rgba(var(--glow-color), 0.3),
+      0 0 25px rgba(var(--glow-color), 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 0 10px rgba(var(--glow-color), 0.8),
+      0 0 25px rgba(var(--glow-color), 0.5),
+      0 0 40px rgba(var(--glow-color), 0.3);
+  }
+}

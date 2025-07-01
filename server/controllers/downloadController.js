@@ -67,10 +67,15 @@ const getMediaInfo = async (req, res) => {
       {}
     );
 
+    const duration = info.videoDetails.lengthSeconds;
+    const publishedAt = info.videoDetails.publishDate;
+
     res.json({
       title: info.videoDetails.title,
       thumbnail: thumbnail.url || "",
       formats,
+      duration,
+      publishedAt,
     });
   } catch (error) {
     console.error("Error in getMediaInfo:", error.message, error.stack);
@@ -89,7 +94,7 @@ const proxyDownload = async (req, res) => {
     const response = await axios.get(url, { responseType: "stream" });
     res.setHeader(
       "Content-Disposition",
-      'attachment; filename="downloaded-media.mp4"'
+      'attachment; filename="ClipFlow-downloaded-media.mp4"'
     );
     response.data.pipe(res);
   } catch (error) {

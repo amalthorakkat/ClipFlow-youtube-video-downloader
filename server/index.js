@@ -8,7 +8,8 @@ const downloadRoutes = require("./routes/download");
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    // origin: "http://localhost:5173",
+    origin: "https://clip-flow-youtube-video-downloader.vercel.app",
     allowedHeaders:['Content-Type'],
     credentials: true,
   })

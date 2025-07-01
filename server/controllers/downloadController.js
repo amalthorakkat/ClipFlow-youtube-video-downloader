@@ -92,6 +92,7 @@ const proxyDownload = async (req, res) => {
       return res.status(400).json({ error: "No URL provided" });
     }
     const response = await axios.get(url, { responseType: "stream" });
+
     res.setHeader(
       "Content-Disposition",
       'attachment; filename="ClipFlow-downloaded-media.mp4"'

@@ -35,6 +35,7 @@ const LinkPaste = ({ onDownload }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState({});
 
   useEffect(() => {
     if (mediaInfo && !isExiting) {
@@ -89,6 +90,8 @@ const LinkPaste = ({ onDownload }) => {
       setIsLoading(false);
     }
   };
+
+  
 
   const handleDownload = (formatUrl, title) => {
     setIsExiting(true);
@@ -255,8 +258,8 @@ const LinkPaste = ({ onDownload }) => {
                     {mediaInfo.title}
                   </h2>
                   <p className="text-sm sm:text-base text-gray-300 text-center">
-                    Duration: {formatDuration(mediaInfo.duration)} | Uploaded: {formatDate(mediaInfo.publishedAt)}
-                    
+                    Duration: {formatDuration(mediaInfo.duration)} | Uploaded:{" "}
+                    {formatDate(mediaInfo.publishedAt)}
                   </p>
                 </div>
               </div>
@@ -364,3 +367,4 @@ const LinkPaste = ({ onDownload }) => {
 };
 
 export default LinkPaste;
+

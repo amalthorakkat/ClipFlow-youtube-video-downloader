@@ -14,15 +14,15 @@ const allowedOrigins = [
 const app = express();
 app.use(
   cors({
-    // origin: "http://localhost:5173",
+    origin: "http://localhost:5173",
     // origin: "https://clip-flow-youtube-video-downloader-qnfwhpuz3.vercel.app",
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, origin);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    // origin: (origin, callback) => {
+    //   if (!origin || allowedOrigins.includes(origin)) {
+    //     callback(null, origin);
+    //   } else {
+    //     callback(new Error("Not allowed by CORS"));
+    //   }
+    // },
     allowedHeaders: ["Content-Type"],
     methods: ["GET", "POST", "OPTIONS"],
     credentials: true,

@@ -13,8 +13,6 @@
 - 🌍 Multi-language support (English, French, German, Hindi, Tamil, Malayalam, Kannada, Telugu, Spanish)
 - ⚡ Fast, reliable downloads with server-side proxying
 - 🖥️ Responsive design for desktop, tablet, and mobile
-- 🧠 Caching of video info for faster repeated requests (MongoDB)
-- 🚦 Handles YouTube rate limits with exponential backoff
 - 🔒 CORS and security best practices
 - 🛠️ Built with React, Vite, Tailwind CSS, Express, and MongoDB
 

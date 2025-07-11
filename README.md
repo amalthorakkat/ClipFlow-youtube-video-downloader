@@ -18,7 +18,7 @@
 - 🔒 CORS and security best practices
 - 🛠️ Built with React, Vite, Tailwind CSS, Express, and MongoDB
 
-## Screenshots
+## Screenshot
 
 ![Screenshot](client/src/assets/SCT/SCT-1.png)
 
